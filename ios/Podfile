@@ -1,0 +1,57 @@
+# iOS Podfile for KitchenCare+ App
+
+platform :ios, '13.0'
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+target 'KitchenCarePlus' do
+  config = use_native_modules!
+  use_react_native!(
+    :path => config[:reactNativePath],
+    :hermes_enabled => true
+  )
+
+  # Firebase dependencies
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseAuth'
+  pod 'FirebaseFirestore'
+  pod 'FirebaseStorage'
+  pod 'FirebaseMessaging'
+
+  # Push notification dependencies
+  pod 'RNCPushNotificationIOS', :path => '../node_modules/@react-native-community/push-notification-ios'
+
+  # Image picker for camera and photo library
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
+  # Document picker for file uploads
+  pod 'react-native-document-picker', :path => '../node_modules/react-native-document-picker'
+
+  # Vector icons
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  # For development and testing
+  target 'KitchenCarePlusTests' do
+    inherit! :complete
+    # Pods for testing
+  end
+
+  # Enables Flipper.
+  # Note that if you have use_frameworks! enabled, Flipper will not work.
+  use_flipper!()
+
+  post_install do |installer|
+    react_native_post_install(installer)
+    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    
+    # iOS 13 compatibility
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      end
+    end
+  end
+end
