@@ -1,0 +1,20 @@
+
+workflows:
+  eas-android:
+    name: EAS Build for Android
+    environment:
+      node: 16.13.0
+      expo-cli: latest
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm install
+      - name: Setup Expo + EAS
+        script: |
+          npm install -g expo-cli eas-cli
+          eas login --token $EXPO_TOKEN
+      - name: Run EAS build
+        script: |
+          eas build --platform android --non-interactive --profile preview
+    artifacts:
+      - build/**/*.apk
