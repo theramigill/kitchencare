@@ -1,0 +1,19 @@
+
+workflows:
+  expo-app:
+    name: Expo Android Build
+    environment:
+      node: 16.13.0
+      expo-cli: latest
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm install
+      - name: Install Expo CLI
+        script: |
+          npm install -g expo-cli
+      - name: Expo build APK
+        script: |
+          expo build:android --non-interactive --no-wait --apk
+    artifacts:
+      - dist/**/*.apk
